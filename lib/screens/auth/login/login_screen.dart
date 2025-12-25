@@ -1,6 +1,7 @@
 import 'package:ecommerce_fyp/config/routes/app_routes.dart';
 import 'package:ecommerce_fyp/config/theme/app_color.dart';
 import 'package:ecommerce_fyp/core/utlis/validator.dart';
+import 'package:ecommerce_fyp/screens/auth/controller/auth_controller.dart';
 import 'package:ecommerce_fyp/widgets/buttons/outline_button_widget.dart';
 import 'package:ecommerce_fyp/widgets/buttons/primary_button.dart';
 import 'package:ecommerce_fyp/widgets/inputs/custom_text_field.dart';
@@ -18,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
+  final AuthController _authController = Get.put(AuthController());
 
   @override
   void dispose() {
@@ -29,10 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2));
-      setState(() => _isLoading = false);
-      Get.toNamed(AppRoutes.MAIN);
+      _authController.login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
     }
   }
 
@@ -94,11 +95,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                PrimaryButton(
+                Obx(() => PrimaryButton(
                   text: 'Login',
                   onPressed: _login,
-                  isLoading: _isLoading,
-                ),
+                  isLoading: _authController.isLoading.value,
+                )),
                 const SizedBox(height: 24),
                 Row(
                   children: [

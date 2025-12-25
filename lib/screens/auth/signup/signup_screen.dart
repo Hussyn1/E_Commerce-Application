@@ -1,12 +1,10 @@
-
-import 'package:ecommerce_fyp/config/routes/app_routes.dart';
 import 'package:ecommerce_fyp/config/theme/app_color.dart';
 import 'package:ecommerce_fyp/core/utlis/validator.dart';
+import 'package:ecommerce_fyp/screens/auth/controller/auth_controller.dart';
 import 'package:ecommerce_fyp/widgets/buttons/primary_button.dart';
 import 'package:ecommerce_fyp/widgets/inputs/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -21,7 +19,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  bool _isLoading = false;
+  final AuthController _authController = Get.put(AuthController());
   bool _acceptTerms = false;
 
   @override
@@ -36,19 +34,21 @@ class _SignupScreenState extends State<SignupScreen> {
   void _signup() async {
     if (_formKey.currentState!.validate()) {
       if (!_acceptTerms) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please accept terms and conditions'),
-            backgroundColor: AppColors.error,
-          ),
+        Get.snackbar(
+          'Error',
+          'Please accept terms and conditions',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.1),
+          colorText: Colors.red,
         );
         return;
       }
 
-      setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2));
-      setState(() => _isLoading = false);
-      Get.toNamed(AppRoutes.MAIN);
+      _authController.signup(
+        _nameController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
     }
   }
 
@@ -149,11 +149,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   ],
                 ),
                 const SizedBox(height: 24),
-                PrimaryButton(
+                Obx(() => PrimaryButton(
                   text: 'Sign Up',
                   onPressed: _signup,
-                  isLoading: _isLoading,
-                ),
+                  isLoading: _authController.isLoading.value,
+                )),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

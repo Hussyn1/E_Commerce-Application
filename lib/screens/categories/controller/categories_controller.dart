@@ -1,4 +1,4 @@
-import 'package:ecommerce_fyp/data/mock_data.dart';
+import 'package:ecommerce_fyp/data/services/firestore_service.dart';
 import 'package:get/get.dart';
 import '../../../data/models/product_model.dart';
 
@@ -17,8 +17,10 @@ class CategoryData {
 }
 
 class CategoriesController extends GetxController {
+  final FirestoreService _firestoreService = FirestoreService();
   final selectedCategory = ''.obs;
   final products = <Product>[].obs;
+  final isLoading = false.obs;
   
   final categories = <CategoryData>[
     CategoryData(
@@ -63,11 +65,19 @@ class CategoriesController extends GetxController {
   void onInit() {
     super.onInit();
     loadProducts();
-    updateProductCounts();
   }
 
-  void loadProducts() {
-    products.value = MockData.getProducts();
+  Future<void> loadProducts() async {
+    try {
+      isLoading.value = true;
+      final fetchedProducts = await _firestoreService.getProducts();
+      products.value = fetchedProducts;
+      updateProductCounts();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load products: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void updateProductCounts() {

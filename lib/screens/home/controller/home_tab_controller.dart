@@ -1,8 +1,10 @@
 import 'package:ecommerce_fyp/data/mock_data.dart';
+import 'package:ecommerce_fyp/data/services/firestore_service.dart';
 import 'package:get/get.dart';
 import '../../../data/models/product_model.dart';
 
 class HomeTabController extends GetxController {
+  final FirestoreService _firestoreService = FirestoreService();
   final selectedCategory = 'All'.obs;
   final isLoading = false.obs;
   final products = <Product>[].obs;
@@ -20,11 +22,27 @@ class HomeTabController extends GetxController {
     loadProducts();
   }
 
-  void loadProducts() {
-    isLoading.value = true;
-    products.value = MockData.getProducts();
-    featuredProducts.value = products.take(4).toList();
-    isLoading.value = false;
+  Future<void> loadProducts() async {
+    try {
+      isLoading.value = true;
+      final fetchedProducts = await _firestoreService.getProducts();
+      
+      // If Firestore is empty, seed it with mock data
+      if (fetchedProducts.isEmpty) {
+        await _firestoreService.seedProducts(MockData.getProducts());
+        // Reload after seeding
+        final newProducts = await _firestoreService.getProducts();
+        products.value = newProducts;
+      } else {
+        products.value = fetchedProducts;
+      }
+      
+      featuredProducts.value = products.take(4).toList();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load products: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void selectCategory(String category) {

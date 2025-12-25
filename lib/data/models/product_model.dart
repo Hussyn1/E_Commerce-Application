@@ -40,4 +40,27 @@ class Product {
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }
+
+  factory Product.fromMap(Map<String, dynamic> map, String id) {
+    return Product(
+      id: id,
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      price: (map['price'] ?? 0).toDouble(),
+      image: map['image'] ?? '',
+      category: map['category'] ?? '',
+      rating: (map['rating'] ?? 0).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'description': description,
+      'price': price,
+      'image': image,
+      'category': category,
+      'rating': rating,
+    };
+  }
 }

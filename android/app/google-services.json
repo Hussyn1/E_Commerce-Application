@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "495860835424",
+    "project_id": "e-com-sqe",
+    "storage_bucket": "e-com-sqe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495860835424:android:024c50c11b32816a0f0f05",
+        "android_client_info": {
+          "package_name": "com.example.ecommerce_fyp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaMdoHhUW0MIxuGzGdNP95q4p76Fg8BEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
