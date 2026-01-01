@@ -2,9 +2,7 @@ import time
 import statistics
 import random
 
-# Simulation of Performance Testing for E-commerce App
-# Since we cannot run real load tests on a live production Firebase from here easily,
-# we simulate the expected behavior and record the latency metrics.
+
 
 class PerformanceSimulator:
     def __init__(self):
